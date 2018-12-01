@@ -1,0 +1,27 @@
+{
+  "name": "language/yii2-protobuf",
+  "type": "library",
+  "description": "a wrapper to decode/encode protobuf",
+  "minimum-stability": "dev",
+  "license": "MIT",
+  "require": {
+    "php": ">=7.0.0",
+    "ext-protobuf":">=3.5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Language\\Protobuf\\": "src",
+      "GPBMetadata\\": "GPBMetadata",
+      "PbApp\\": "PbApp"
+    }
+  },
+  "authors": [
+    {
+      "name": "liugaoyun",
+      "email": "liugy@soulgame.com"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "^6.2"
+  }
+}

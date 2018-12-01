@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package PbApp;
+
+message Request
+{
+    map<string,string>  Headers  = 1;			// 消息头
+    map<string,string>  BodyParams  = 2;         // 具体参数字典
+}
+
+message Meta
+{
+    int32 Param1 = 1;
+}
+
+message Reponse
+{
+    string  ReflectClass    = 1;    //解析是使用的反射类
+    bytes   Body            = 2;    //自定义pb数据
+    repeated string ArrayParams = 3;
+    map<string,Meta> MapParams = 4;
+}
+
+message UserInfo
+{
+    string  OpenUid         = 1;
+    string  NickName        = 2;
+}
+
+message Address
+{
+    string IphoneNum    = 1;
+    string  Gender      = 2;
+}
+
+message City
+{
+    string Name     = 1;
+}
+
+message UserLoginACK
+{
+    UserInfo    UserInfo    = 1;
+    map<string,Address> AddrList= 2;
+    repeated    City   GoneCities = 3;
+}
