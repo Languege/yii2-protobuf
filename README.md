@@ -13,21 +13,27 @@ composer require liugaoyun/protobuf
 ### 配置
 ```php
 return [
-     'components' => [
-          'request' => [
-              'parsers' => [
-                  'application/x-protobuf' => 'Language\Protobuf\ProtobufParser'
-              ],
-          ],
-          'response' => [
-            'formatters'=>[
-                'protobuf' => 'Language\Protobuf\ProtobufResponseFormatter'
+    ...
+    'components' => [
+            ...
+        'request' => [
+            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+            'cookieValidationKey' => 'inwyiHVV0KPon5UhGv6l0QYaWL4SC1ww',
+            'parsers' => [
+                'application/x-protobuf' => 'Language\Protobuf\ProtobufParser'
             ],
-          ],
-          // ...
-      ],
-      // ...
-  ];
+        ],
+        'response' => [
+            'formatters'=>[
+                'protobuf' => [
+                    'class'=>'Language\Protobuf\ProtobufResponseFormatter',
+                    'hump'=>true, //默认开启字段名下划线转驼峰式， 例如 iphone_num 转为 IphoneNum
+                ],
+            ],
+        ],
+        ...
+    ],
+]
 
 ```
 

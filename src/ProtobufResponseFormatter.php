@@ -17,6 +17,8 @@ class ProtobufResponseFormatter extends Component implements ResponseFormatterIn
 {
     public $contentType = 'application/x-protobuf';
 
+    public $hump = true;    //默认下滑线转驼峰式
+
     public function init()
     {
         parent::init();
@@ -61,6 +63,14 @@ class ProtobufResponseFormatter extends Component implements ResponseFormatterIn
         return $obj;
     }
 
+    //下滑线转驼峰式
+    public static function toHump($str, $ucfirst = true)
+    {
+        $str = ucwords(str_replace('_', ' ', $str));
+        $str = str_replace(' ', '', lcfirst($str));
+        return $ucfirst ? ucfirst($str) : $str;
+    }
+
     private function encode(\Google\Protobuf\Internal\Message $obj, $data){
         $class_name = get_class($obj);
 
@@ -68,6 +78,11 @@ class ProtobufResponseFormatter extends Component implements ResponseFormatterIn
         $meta = ProtobufManager::getMessageMeta($class_name);
         $fields = array_keys($meta);
         foreach ($data as $key => $val) {
+            //下划线转驼峰式
+            if($this->hump === true){
+                $key = self::toHump($key);
+            }
+
             if(!in_array($key, $fields)){//未定义的属性
                 continue;
             }
