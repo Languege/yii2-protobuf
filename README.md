@@ -6,7 +6,7 @@
 
 ### 安装
 ```bash
-composer require liugaoyun/protobuf
+composer require language/yii2-protobuf
 ```
 
 
