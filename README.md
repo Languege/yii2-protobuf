@@ -37,6 +37,10 @@ return [
 
 ```
 
+### HTTP Header
+解析或格式化protobuf数据统一使用Content-Type的类型为application/x-protobuf
+
+
 ### protobuf消息注册
 概述：默认已经注释为解析protobuf和封装定义结构的消息了，生成消息的方式参见proto文件夹下build.sh
 
