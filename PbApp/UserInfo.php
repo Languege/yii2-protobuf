@@ -21,6 +21,14 @@ class UserInfo extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string NickName = 2;</code>
      */
     private $NickName = '';
+    /**
+     * Generated from protobuf field <code>int32 Age = 3;</code>
+     */
+    private $Age = 0;
+    /**
+     * Generated from protobuf field <code>int32 Param1 = 4;</code>
+     */
+    private $Param1 = 0;
 
     public function __construct() {
         \GPBMetadata\Msg::initOnce();
@@ -67,6 +75,50 @@ class UserInfo extends \Google\Protobuf\Internal\Message
     {
         GPBUtil::checkString($var, True);
         $this->NickName = $var;
+
+        return $this;
+    }
+
+    /**
+     * Generated from protobuf field <code>int32 Age = 3;</code>
+     * @return int
+     */
+    public function getAge()
+    {
+        return $this->Age;
+    }
+
+    /**
+     * Generated from protobuf field <code>int32 Age = 3;</code>
+     * @param int $var
+     * @return $this
+     */
+    public function setAge($var)
+    {
+        GPBUtil::checkInt32($var);
+        $this->Age = $var;
+
+        return $this;
+    }
+
+    /**
+     * Generated from protobuf field <code>int32 Param1 = 4;</code>
+     * @return int
+     */
+    public function getParam1()
+    {
+        return $this->Param1;
+    }
+
+    /**
+     * Generated from protobuf field <code>int32 Param1 = 4;</code>
+     * @param int $var
+     * @return $this
+     */
+    public function setParam1($var)
+    {
+        GPBUtil::checkInt32($var);
+        $this->Param1 = $var;
 
         return $this;
     }

@@ -10,17 +10,28 @@ namespace Language\Protobuf;
 
 
 use yii\base\Component;
+use yii\web\Response;
 use yii\web\ResponseFormatterInterface;
 
 class ProtobufResponseFormatter extends Component implements ResponseFormatterInterface
 {
+    public $contentType = 'application/x-protobuf';
+
+    public function init()
+    {
+        parent::init();
+        ProtobufManager::register(dirname(__DIR__) . '/proto/msg.proto.php');
+    }
+
     /**
      * Formats the specified response.
      * @param Response $response the response to be formatted.
      */
     public function format($response)
     {
-        // TODO: Implement format() method.
+        $obj = $this->serialize($response->data['class'], $response->data['data']);
+        $response->getHeaders()->set('Content-Type', $this->contentType);
+        $response->content = $obj->serializeToString();
     }
 
     /**
@@ -30,11 +41,16 @@ class ProtobufResponseFormatter extends Component implements ResponseFormatterIn
      * @param $data 数组（哈希表）
      */
     public function serialize($classname, $data){
-        if(!class_exists($classname)){
-            throw new ProtobufException("class $classname not found");
+        if(is_object($classname)){
+            $obj = $classname;
+        }else{
+            if(!class_exists($classname)){
+                throw new ProtobufException("class $classname not found");
+            }
+
+            $obj = new $classname;
         }
 
-        $obj = new $classname;
         if (empty($data)) {
             return $obj;
         }

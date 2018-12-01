@@ -25,6 +25,8 @@ message UserInfo
 {
     string  OpenUid         = 1;
     string  NickName        = 2;
+    int32   Age             = 3;
+    int32   Param1          = 4;
 }
 
 message Address

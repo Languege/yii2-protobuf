@@ -76,6 +76,22 @@ return [
             'IsMap'=>false, 
             'MapKeyType'=>'null'
         ],
+
+        'Age'=>[
+            'IsScalarType'=>true,
+            'FieldType'=>'int32', 
+            'IsArray'=>false, 
+            'IsMap'=>false, 
+            'MapKeyType'=>'null'
+        ],
+
+        'Param1'=>[
+            'IsScalarType'=>true,
+            'FieldType'=>'int32', 
+            'IsArray'=>false, 
+            'IsMap'=>false, 
+            'MapKeyType'=>'null'
+        ],
     ],
     'PbApp\Address'=>[
         'IphoneNum'=>[

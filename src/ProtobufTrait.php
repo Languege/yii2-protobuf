@@ -10,6 +10,7 @@ namespace Language\Protobuf;
 
 
 use yii\web\Response;
+use Yii;
 
 trait ProtobufTrait
 {
