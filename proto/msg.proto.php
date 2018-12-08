@@ -18,6 +18,40 @@ return [
             'MapKeyType'=>'string'
         ],
     ],
+    'PbApp\UserMsgLoginREQ'=>[
+        'UserName'=>[
+            'IsScalarType'=>true,
+            'FieldType'=>'string', 
+            'IsArray'=>false, 
+            'IsMap'=>false, 
+            'MapKeyType'=>'null'
+        ],
+
+        'Password'=>[
+            'IsScalarType'=>true,
+            'FieldType'=>'string', 
+            'IsArray'=>false, 
+            'IsMap'=>false, 
+            'MapKeyType'=>'null'
+        ],
+    ],
+    'PbApp\FlexiableRequest'=>[
+        'ProtoClass'=>[
+            'IsScalarType'=>true,
+            'FieldType'=>'string', 
+            'IsArray'=>false, 
+            'IsMap'=>false, 
+            'MapKeyType'=>'null'
+        ],
+
+        'ProtoData'=>[
+            'IsScalarType'=>true,
+            'FieldType'=>'bytes', 
+            'IsArray'=>false, 
+            'IsMap'=>false, 
+            'MapKeyType'=>'null'
+        ],
+    ],
     'PbApp\Meta'=>[
         'Param1'=>[
             'IsScalarType'=>true,

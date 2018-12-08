@@ -1,16 +1,21 @@
-### 要求
-1. PHP >= 7.0
-2. php protobuf扩展 >=3.5.0
-3. yiisoft/yii2 >= 2.0.0
+Yii Protobuf Extension is a wrapper for [php protobuf c-extension](https://github.com/protocolbuffers/protobuf/tree/master/php).It provides an easy way to decode/encoder protobuf data with Yii.In addition to，it provides a tool to generate php proto files from .proto.
 
+You must install php [c-ext](https://github.com/protocolbuffers/protobuf/tree/master/php) before you can use this extension
 
-### 安装
+### Requirements
+To use PHP runtime library requires:
+- C extension:protobuf >= 3.5.0
+- PHP package:php >= 7.0.0
+- Yii2.0 or above
+
+### Installation
+You can install this extension by composer, as follows:
 ```bash
 composer require language/yii2-protobuf
 ```
 
-
-### 配置
+### Configure
+You need to add protobuf parser/formatter for request/response Component, as follows:
 ```php
 return [
     ...
@@ -27,7 +32,7 @@ return [
             'formatters'=>[
                 'protobuf' => [
                     'class'=>'Language\Protobuf\ProtobufResponseFormatter',
-                    'hump'=>true, //默认开启字段名下划线转驼峰式， 例如 iphone_num 转为 IphoneNum
+                    'hump'=>true, //By default, the field name is underlined to hump, for example, iphone_num is converted to IphoneNum.
                 ],
             ],
         ],
@@ -36,34 +41,38 @@ return [
 ]
 
 ```
+As you can see, this extension use ```application/x-protobuf``` Content-Type to distinguish protobuf binary data.So, Client should set Content-Type as 
+```application/x-protobuf``` when it send protobuf binary data to Server
 
-### HTTP Header
-解析或格式化protobuf数据统一使用Content-Type的类型为application/x-protobuf
+### Generate Proto
+You can run build.sh shell script to generate proto files after Editing msg.proto. it will generate ```PbApp``` and ```GPBMetadata```.You should always edit .proto instead of editing generated proto files
+ ```shell
+bash build.sh
+```
 
 
-### protobuf消息注册
-概述：默认已经注释为解析protobuf和封装定义结构的消息了，生成消息的方式参见proto文件夹下build.sh
+### Register Proto
+You need to register .proto.php files for encode protobuf data after generate proto files.You can create a base controller and register them, As follows:
 
-使用建议：可以将proto文件夹，放到yii工程文件下，执行build.sh后生成PbApp和GPBMetadata文件夹，这样可以免去写自动加载方法并和扩展protobuf包名保持一致
-
-
-使用消息管理类注释protobuf解析定义文件
 
 ```php
 class BaseController extends Controller
 {
-    use ProtobufTrait;  //利用trait特性asProtobuf方法注入
+    use ProtobufTrait;  //Inject using the trait attribute asProtobuf method
 
     public function init()
     {
         parent::init();
         // 消息文件注册
-        ProtobufManager::register(ROOT . '/proto/msg.proto.php'); //ROOT . '/proto/msg.proto.php' 为脚本生成的php消息，可注册多个
+        ProtobufManager::register(ROOT . '/proto/msg.proto.php');
     }
 }
 ```
+ProtobufTrait provides ```asProtobuf``` method to convert php hash table to protobuf data
 
-### 获取Body参数和响应范例
+
+### Usage
+You should alway get request params with ```$request->getBodyParams()```intead of ```$_REQUEST```.ProtobufParser parser protobuf to array 
 ```php
 <?php
 /**
@@ -81,21 +90,14 @@ use yii\base\Controller;
 
 class TestController extends Controller
 {
-    use ProtobufTrait;  //利用trait特性asProtobuf方法注入
-
-    public function init()
-    {
-        parent::init();
-        // 消息文件注册
-    }
 
     public function actionProtobuf(){
-        //参数获取
+        //params
         $params = \Yii::$app->getRequest()->getBodyParams();
 
-        //TODO:逻辑代码
+        //TODO:your logic
 
-        //结果protobuf序列化，支持属性名下滑线转驼峰式
+        //convert array to protobuf
         $data = [
             'UserInfo'=>[
                 'OpenUid'=>'xxxx',
@@ -125,7 +127,7 @@ class TestController extends Controller
 }
 ```
 
-结果范例
+Sample
 ```text
 
 
@@ -139,57 +141,60 @@ class TestController extends Controller
 Hangzhou
 ```
 
-
-### proto范例
-扩展完整支持proto3特性
-```proto
-syntax = "proto3";
-
-package PbApp;
-
+### Customized  Request Struct
+By default, protobuf parser can only parser map<string,string> protobuf data as message-defined ```proto``` 
+```protobuf
 message Request
 {
-    map<string,string>  Headers  = 1;			// 消息头
-    map<string,string>  BodyParams  = 2;         // 具体参数字典
+    map<string,string>  Headers  = 1;			// Header Params
+    map<string,string>  BodyParams  = 2;         // Body Params
 }
-
-message Meta
-{
-    int32 Param1 = 1;
-}
-
-message Reponse
-{
-    string  ReflectClass    = 1;    //解析是使用的反射类
-    bytes   Body            = 2;    //自定义pb数据
-    repeated string ArrayParams = 3;
-    map<string,Meta> MapParams = 4;
-}
-
-message UserInfo
-{
-    string  OpenUid         = 1;
-    string  NickName        = 2;
-    int32   Age             = 3;
-    int32   Param1          = 4;
-}
-
-message Address
-{
-    string IphoneNum    = 1;
-    string  Gender      = 2;
-}
-
-message City
-{
-    string Name     = 1;
-}
-
-message UserLoginACK
-{
-    UserInfo    UserInfo    = 1;
-    map<string,Address> AddrList= 2;
-    repeated    City   GoneCities = 3;
-}
-
 ```
+
+You can define your request proto, as follows
+```protobuf
+message Meta{
+    repeated    Params = 1;
+}
+
+message MyRequest
+{
+     map<string,Meta>  Headers  = 1;			// Header Params
+        map<string,Meta>  BodyParams  = 2;         // Body Params
+}
+```
+Then, you should tell ProtobufFormatter which class to serialize Array Data
+ ```php
+return [
+    ...
+    'components' => [
+            ...
+        'response' => [
+            'formatters'=>[
+                'protobuf' => [
+                    'class'=>'Language\Protobuf\ProtobufResponseFormatter',
+                    'hump'=>true, //By default, the field name is underlined to hump, for example, iphone_num is converted to IphoneNum.
+                    'requestProtoClass'=>'PbApp\MyRequest'
+                ],
+            ],
+        ],
+        ...
+    ],
+]
+```
+
+If you need more flexiable data-struct, you can parser the protobuf raw data, as follows:
+```php
+message UserMsgLoginREQ{
+    string  UserName = 1;
+    string  Password = 2;
+}
+
+message FlexiableRequest
+{
+    string ProtoClass  = 1;         // proto class to parser
+    bytes  ProtoData  = 2;         // bytes protobuf data
+}
+```
+
+FlexiableRequest is a internal proto define. So, don't change the message name.

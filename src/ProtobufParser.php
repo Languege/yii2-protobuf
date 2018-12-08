@@ -1,5 +1,6 @@
 <?php
 namespace Language\Protobuf;
+use PbApp\FlexiableRequest;
 use yii\base\BaseObject;
 use yii\web\BadRequestHttpException;
 
@@ -28,6 +29,8 @@ class ProtobufParser  extends BaseObject  implements  \yii\web\RequestParserInte
 
     public $contentType = 'application/x-protobuf';
 
+    public $requestProtoClass = 'PbApp\Request';
+
     public function init()
     {
         parent::init();
@@ -40,10 +43,21 @@ class ProtobufParser  extends BaseObject  implements  \yii\web\RequestParserInte
             $this->raw = $rawBody;
 
             try{
-                $this->protobuf = new \PbApp\Request();
-                $this->protobuf->mergeFromString($this->raw);
+                if($this->requestProtoClass == FlexiableRequest::class){
+                    $this->protobuf = new FlexiableRequest();
+                    $this->protobuf->mergeFromString($this->raw);
 
-                $this->params = array_merge((array)$this->protobuf->getBodyParams(), (array)$this->protobuf->getHeaders());
+                    $dataObj = new $this->protobuf->getProtoClass();
+                    $dataObj->mergeFromString($this->protobuf->getProtoData());
+
+                    $this->params = json_decode($dataObj->serializeToJsonString(), true);
+                }else{
+                    $this->protobuf = new $this->requestProtoClass;
+                    $this->protobuf->mergeFromString($this->raw);
+
+                    $this->params = array_merge((array)$this->protobuf->getBodyParams(), (array)$this->protobuf->getHeaders());
+                }
+
 
                 return $this->params;
             }catch(\Exception $e){

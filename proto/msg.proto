@@ -8,6 +8,17 @@ message Request
     map<string,string>  BodyParams  = 2;         // 具体参数字典
 }
 
+message UserMsgLoginREQ{
+    string  UserName = 1;
+    string  Password = 2;
+}
+
+message FlexiableRequest
+{
+    string ProtoClass  = 1;         // proto class to parser
+    bytes  ProtoData  = 2;         // bytes protobuf data
+}
+
 message Meta
 {
     int32 Param1 = 1;
